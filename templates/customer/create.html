@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    /* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+}
+
+.new-customer-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* Left and Right Side Form Layout */
+.customer-form-left,
+.customer-form-right {
+    flex: 1;
+    min-width: 300px;
+}
+
+/* Form Group Styling */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group input[type="number"],
+.form-group input[type="password"],
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Customer Login Info Section */
+.login-info {
+    flex-basis: 100%;
+    margin-top: 20px;
+}
+
+.login-info h2 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* Delivery Schedule Checkboxes */
+.delivery-days {
+    margin-top: 20px;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+/* Form Actions Styling */
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #fff;
+    background-color: #007bff;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.btn-cancel {
+    background-color: #6c757d;
+}
+
+.btn-cancel:hover {
+    background-color: #5a6268;
+}
+
+</style>
+<body>
+    <div class="new-customer-container">
+        <h1>New Customer</h1>
+        <form method="POST" action="/add_customer">
+            <!-- Left side form -->
+            <div class="customer-form-left">
+                <div class="form-group">
+                    <label for="account_open_date">Account Open Date:</label>
+                    <input type="date" id="account_open_date" name="account_open_date" required>
+                </div>
+    
+                <div class="form-group">
+                    <label for="customer_name">Customer Name:</label>
+                    <input type="text" id="customer_name" name="customer_name" required>
+                </div>
+    
+                <div class="form-group">
+                    <label for="contact_number">Contact #:</label>
+                    <input type="text" id="contact_number" name="contact_number" placeholder="+91" required>
+                </div>
+    
+                <div class="form-group">
+                    <label for="address">Address:</label>
+                    <input type="text" id="address" name="address" required>
+                </div>
+    
+                <div class="form-group">
+                    <label for="account_status">Account Status:</label>
+                    <select id="account_status" name="account_status" required>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+    
+            <!-- Right side form -->
+            <div class="customer-form-right">
+                <div class="form-group">
+                    <label for="security_deposit">Security Deposit Amount:</label>
+                    <input type="number" id="security_deposit" name="security_deposit" value="0">
+                </div>
+    
+                <div class="form-group">
+                    <label for="security_remarks">Security Remarks:</label>
+                    <input type="text" id="security_remarks" name="security_remarks">
+                </div>
+    
+                <div class="form-group">
+                    <label for="opening_bottle">Opening Bottle:</label>
+                    <input type="number" id="opening_bottle" name="opening_bottle" value="0" required>
+                </div>
+    
+                <div class="form-group">
+                    <label for="opening_balance">Opening Balance:</label>
+                    <input type="number" id="opening_balance" name="opening_balance" value="0" required>
+                </div>
+            </div>
+    
+            <!-- Customer Login Info -->
+            <div class="form-group login-info">
+                <h2>Customer Login Info</h2>
+                <div class="form-group">
+                    <label for="username">User Name:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+    
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+            </div>
+    
+            <!-- Area Selection -->
+            <div class="form-group">
+                <label for="area">Select Area:</label>
+                <select id="area" name="area" required>
+                    <option value="">Select Area</option>
+                    {% if area %}
+                        {% for a in area %}
+                            <option value="{{ a[3] }}">{{ a[0] }}</option>  <!-- a[3] is location_id, a[0] is the display name -->
+                        {% endfor %}
+                    {% else %}
+                        <option value="">No Areas Available</option>
+                    {% endif %}
+                </select>
+            </div>
+    
+            <!-- Delivery Schedule -->
+            <div class="form-group delivery-days">
+                <label>Delivery Schedule:</label>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="monday" name="days[]" value="monday">
+                    <label for="monday">Monday</label>
+    
+                    <input type="checkbox" id="tuesday" name="days[]" value="tuesday">
+                    <label for="tuesday">Tuesday</label>
+    
+                    <input type="checkbox" id="wednesday" name="days[]" value="wednesday">
+                    <label for="wednesday">Wednesday</label>
+    
+                    <input type="checkbox" id="thursday" name="days[]" value="thursday">
+                    <label for="thursday">Thursday</label>
+    
+                    <input type="checkbox" id="friday" name="days[]" value="friday">
+                    <label for="friday">Friday</label>
+    
+                    <input type="checkbox" id="saturday" name="days[]" value="saturday">
+                    <label for="saturday">Saturday</label>
+    
+                    <input type="checkbox" id="sunday" name="days[]" value="sunday">
+                    <label for="sunday">Sunday</label>
+                </div>
+            </div>
+    
+            <!-- Bottle Quantity for Order Delivery -->
+            <div class="form-group">
+                <label for="required_bottles">Required Bottle Qty For Order Delivery:</label>
+                <input type="number" id="required_bottles" name="required_bottles" value="0" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="products">Select Products and Customize Prices:</label>
+                <div id="product-container">
+                    {% for products in products %}
+                        <div class="product-item">
+                            <input type="checkbox" id="products_{{ products[0] }}" name="products[]" value="{{ products[0] }}">
+                            <label for="products_{{ products[0] }}">{{ products[1] }} (Default Price: ₹{{ products[2] }})</label>
+                            <input type="number" name="custom_price_{{ products[0] }}" placeholder="Custom Price (Optional)" step="0.01">
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="submit" class="btn">New Customer</button>
+                <button type="reset" class="btn btn-cancel">Refresh</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+
+{% endblock content %}

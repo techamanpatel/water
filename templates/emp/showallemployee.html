@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+/* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+}
+
+.employee-list-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Table Styling */
+.employee-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 16px;
+}
+
+.employee-table th, .employee-table td {
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.employee-table th {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+.employee-table td {
+    background-color: #f9f9f9;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+}
+
+.employee-table tr:nth-child(even) td {
+    background-color: #f2f2f2;
+}
+
+.employee-table tr:hover td {
+    background-color: #eaf6f6;
+}
+
+/* Button Styling */
+.btn.update-btn {
+    background-color: #2196F3;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn.update-btn:hover {
+    background-color: #1a73e8;
+}
+
+/* No Employees Found Styling */
+.center {
+    text-align: center;
+    font-style: italic;
+    color: #777;
+}
+</style>
+<body>
+    <div class="employee-list-container">
+        <h1>Employee List</h1>
+        
+        <table class="employee-table">
+            <thead>
+                <tr>
+                    <th>Update</th>
+                    <th>Join Date</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>NIC</th>
+                    <th>Contact</th>
+                    <th>Address</th>
+                    <th>Designation</th>
+                    <th>Account Status</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if employees %}
+                    {% for employee in employees %}
+                        <tr>
+                            <td><a href="{{ url_for('edit_employee', id=employee[0]) }}"><button type="button" class="btn update-btn">Update</button></a></td> <!-- Serial Number -->
+                            <td>{{ employee[1] }}</td> <!-- Join Date -->
+                            <td>{{ employee[2] }}</td> <!-- First Name -->
+                            <td>{{ employee[3] }}</td> <!-- Last Name -->
+                            <td>{{ employee[4] }}</td> <!-- NIC -->
+                            <td>{{ employee[5] }}</td> <!-- Contact -->
+                            <td>{{ employee[6] }}</td> <!-- Address -->
+                            <td>{{ employee[7] }}</td> <!-- Designation -->
+                            <td>{{ employee[8] }}</td> <!-- Account Status -->
+                            <td>{{ employee[9] }}</td> <!-- Username -->
+                            <td>{{ employee[10] }}</td> <!-- Password -->
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="11" class="center">No employees found.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+
+{% endblock %}

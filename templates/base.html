@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navbar</title>
+</head>
+<style>
+    * {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+}
+
+.navbar {
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.navbar a{
+    text-decoration: none;
+color: black;
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+.logo-text {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  text-decoration: none;
+}
+
+.navbar-links {
+  display: none;
+  gap: 16px;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropbtn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.dropbtn span {
+  margin-left: 4px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  min-width: 160px;
+  z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content a {
+  padding: 8px 16px;
+  display: block;
+  color: #333;
+  text-decoration: none;
+}
+
+.dropdown-content a:hover {
+  background-color: #f2f2f2;
+}
+
+.navbar-account {
+  display: none;
+}
+
+.account-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.menu-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.dropdown-mobile {
+  padding: 8px 0;
+}
+
+.dropdown-mobile h2 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.dropdown-mobile a {
+  display: block;
+  padding: 4px 0;
+  color: #333;
+  text-decoration: none;
+}
+
+.dropdown-mobile a:hover {
+  background-color: #f2f2f2;
+}
+
+.mobile-menu .account-btn {
+  width: 100%;
+}
+
+/* Media Queries */
+@media (min-width: 768px) {
+  .navbar-links {
+    display: flex;
+  }
+
+  .navbar-account {
+    display: flex;
+  }
+
+  .menu-btn,
+  .mobile-menu {
+    display: none;
+  }
+}
+
+.show {
+  display: flex;
+}
+
+</style>
+<body>
+
+  <nav class="navbar">
+    <div class="container">
+      <div class="navbar-logo">
+        <a href="/" class="logo-text">Logo</a>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <div class="navbar-links">
+        <div class="dropdown">
+          <button class="dropbtn"><a href="{{ url_for('index') }}">Dashboard</a></span></button>
+          
+        </div>
+
+        <div class="dropdown">
+          <button class="dropbtn">Products <span>&#9662;</span></button>
+          <div class="dropdown-content">
+
+            <a href="{{ url_for('addproduct') }}">Add New Product</a>
+            <a href="{{ url_for('add_new_filling_stock') }}">Add Brand New Bottle Stock</a>
+            <a href="{{ url_for('view_transactions') }}">Filling Stock History</a>
+            <a href="{{ url_for('stock_in_out') }}">Stock IN / OUT</a>
+            <a href="{{ url_for('check_stock_balance') }}">Check Stock Balance</a>
+          </div>
+          
+        </div>
+
+        <div class="dropdown">
+          <button class="dropbtn">Employees<span>&#9662;</span></button>
+          <div class="dropdown-content">
+            <a href="{{ url_for('employee') }}">Add New Employee</a>
+            <a href="{{ url_for('area') }}">Assign Area To Employee</a>
+            <a href="{{ url_for('showallemployees') }}">Show All Employee</a>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <button class="dropbtn">Customers<span>&#9662;</span></button>
+          <div class="dropdown-content">
+            <a href="{{ url_for('customer_add') }}">Add New Customer</a>
+            <a href="{{url_for('show_all_customers')}}" >Show All Customers</a>
+            <a href="">New Sales Order</a>
+
+          </div>
+        </div>
+         
+        <div class="dropdown">
+          <button class="dropbtn"><a href="{{ url_for('logout') }}">Logout</a></span></button>
+          
+        </div>
+
+      </div>
+
+      <div class="navbar-account">
+        <button class="account-btn">{{session['name']}}</button>
+      </div>
+
+      <!-- Mobile menu button -->
+      <button class="menu-btn" onclick="toggleMobileMenu()">☰</button>
+    </div>
+
+    <!-- Mobile Navigation Menu -->
+    <div id="mobileMenu" class="mobile-menu">
+      <div class="dropdown-mobile">
+        <a href="">Dashboard</a>
+       
+      </div>
+      <div class="dropdown-mobile">
+        <h2>Solutions</h2>
+        <a href="#">Solution 1</a>
+        <a href="#">Solution 2</a>
+        <a href="#">Solution 3</a>
+      </div>
+      <div class="dropdown-mobile">
+        <h2>Resources</h2>
+        <a href="#">Resource 1</a>
+        <a href="#">Resource 2</a>
+        <a href="#">Resource 3</a>
+      </div>
+      <button class="account-btn mobile">{{session['name']}}</button>
+    </div>
+  </nav>
+  {% block content %}
+        
+  {% endblock content %}
+  <script>
+    function toggleMobileMenu() {
+      document.getElementById('mobileMenu').classList.toggle('show');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    /* Page Container */
+    .filling-stock-page {
+        font-family: Arial, sans-serif;
+        display: flex;
+        padding: 20px;
+        background-color: #f1f1f1;
+        gap: 20px;
+        width: 100%;
+    }
+
+    .filling-stock-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    /* Form Section */
+    .filling-form {
+        width: 100%;
+        max-width: 500px; /* Adjust width as needed */
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 5px;
+    }
+
+    .form-group select,
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+    }
+
+    .form-actions {
+        text-align: right;
+    }
+
+    .btn {
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    /* Stock Details Section */
+    .stock-details {
+        flex-grow: 1; /* Allows table section to take remaining space */
+        overflow-x: auto;
+    }
+
+    .stock-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Table Header Styling */
+    .stock-table thead th {
+        background-color: #4caf50;
+        color: #ffffff;
+        text-align: left;
+        padding: 12px;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    /* Table Row Styling */
+    .stock-table tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .stock-table tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    /* Table Cell Styling */
+    .stock-table td,
+    .stock-table th {
+        padding: 12px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    /* No products message */
+    .stock-table td[colspan="5"] {
+        text-align: center;
+        color: #666;
+    }
+</style>
+
+
+
+<body>
+    <h2 class="filling-stock-title">Add New Filling Stock</h2>
+
+    <div class="filling-stock-page">
+        <!-- Left side form -->
+        <form class="filling-form" method="POST" action="/add_new_filling_stock">
+
+        <div class="form-container">
+            <!-- Product Dropdown -->
+            <div class="form-group">
+                <label for="product_id">Product Name:</label>
+                <select id="product_id" name="product_id" required>
+                    {% for products in products %}
+                    <option value="{{products[0]}}">{{products[1]}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- New Stock Quantity -->
+            <div class="form-group">
+                <label for="quantity">New Stock Quantity:</label>
+                <input type="number" id="quantity" name="quantity" required>
+            </div>
+
+            <!-- Date of the Update -->
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+
+            <!-- Stock Type Dropdown -->
+            <div class="form-group">
+                <label for="stock_type">Stock Type:</label>
+                <select id="stock_type" name="stock_type" required>
+                    <option value="filled_stock">Add Filled Bottles New Stock</option>
+                    <option value="empty_stock">Add Empty Bottles New Stock</option>
+                </select>
+            </div>
+
+            <!-- Salesman Dropdown -->
+            <div class="form-group">
+                <label for="salesman">Salesman:</label>
+                <select id="salesman" name="salesman" required>
+                    <option value="Admin">Admin</option>
+                    <option value="Salesman">Salesman</option>
+                </select>
+            </div>
+
+            <!-- Remarks Textarea -->
+            <div class="form-group">
+                <label for="remarks">Remarks:</label>
+                <textarea id="remarks" name="remarks" rows="3"></textarea>
+            </div>
+           
+            <!-- Submit Button -->
+            <div class="form-actions">
+                <button type="submit" class="btn">Update New Stock</button>
+            </div>
+
+        </div> 
+        </form>
+
+                <!-- Right side stock details with scrollable table -->
+      <div class="stock-details">
+        <table class="stock-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Product Name</th>
+            <th>Total Bottles in Stock</th>
+            <th>Total Bottles Stock at Customer</th>
+            <th>Total Stock</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if products %}
+            {% for products in products %}
+                <tr>
+                    <td>{{ products[0] }}</td> <!-- ID -->
+                    <td>{{ products[1] }}</td> <!-- Product Name -->
+                    <td>{{ products[2] }}</td> <!-- Total Bottles in Stock -->
+                    <td>{{ products[3] }}</td> <!-- Total Bottles at Customer -->
+                    <td>{{ products[4] }}</td> <!-- Total Stock -->
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="5">No products available.</td>
+            </tr>
+        {% endif %}
+    </tbody>
+    </table>
+</div>
+        </div>
+    
+</body>
+</html>
+
+{% endblock content %}
