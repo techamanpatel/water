@@ -3,8 +3,8 @@ import sqlite3
 from auth import *
 from products import *
 from stocks import *
-from employees import *
-from customers import *
+# from employees import *
+# from customers import *
 
 import databases
 databases.create_database()
