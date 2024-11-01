@@ -250,7 +250,7 @@ def add_customer():
     add_new_customer(request)
     return redirect(url_for("show_all_customers"))
 
-@app.route("/new_sales_order",methods=["GET", "POST"])
+@app.route('/new_sales_order',methods=["GET", "POST"])
 
 def new_sales_order():
     auth_redirect = isauth()
@@ -259,11 +259,13 @@ def new_sales_order():
 
     if request.method == "GET":
         sales = get_sales_order()
-        return render_template('customer/new_sales_order.html', sales=sales, session=session)
+        customer_products = get_customer_products(1)
+
+        return render_template('customer/new_sales_order.html', sales=sales,customer_products =customer_products ,session=session)
 
     if request.method == "POST":
         sales_order(request)
         return redirect(url_for('new_sales_order'))
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0",debug=True)

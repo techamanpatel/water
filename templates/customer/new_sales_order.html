@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,15 +11,8 @@
 </head>
 <style>
     /* General Styling */
-body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-    background-color: #f0f2f5;
-}
 
-.container {
+.sales_container {
     max-width: 1200px;
     display: flex;
     gap: 20px;
@@ -51,7 +48,7 @@ label {
     display: block;
 }
 
-input, select, button {
+input, select, .sales_container button {
     width: 100%;
     padding: 10px;
     margin-top: 5px;
@@ -62,11 +59,11 @@ input, select, button {
     transition: border-color 0.2s ease-in-out;
 }
 
-input:focus, select:focus {
+.sales_container input:focus, select:focus {
     border-color: #3498db;
 }
 
-select {
+.sales_container select {
     cursor: pointer;
 }
 
@@ -81,7 +78,7 @@ select {
 }
 
 /* Button Styles */
-button {
+.sales_container button {
     background-color: #3498db;
     color: #ffffff;
     font-weight: bold;
@@ -91,11 +88,11 @@ button {
     transition: background-color 0.3s;
 }
 
-button:hover {
+.sales_container button:hover {
     background-color: #2980b9;
 }
 
-button:active {
+.sales_container button:active {
     background-color: #1c5980;
 }
 
@@ -106,29 +103,29 @@ button:active {
 }
 
 /* Table Styles */
-table {
+.sales_container table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
 }
 
-th, td {
+.sales_container th, .sales_container td {
     border: 1px solid #dcdfe6;
     padding: 12px;
     text-align: center;
     color: #2c3e50;
 }
 
-th {
+.sales_container th {
     background-color: #ecf0f1;
     font-weight: bold;
 }
 
-td {
+.sales_container td {
     background-color: #ffffff;
 }
 
-table tr:nth-child(even) td {
+.sales_container table tr:nth-child(even) td {
     background-color: #f8f9fa;
 }
 
@@ -153,8 +150,9 @@ table tr:nth-child(even) td {
 
 </style>
 <body>
-    <div class="container">
+    <div class="sales_container">
         <h2>New Order</h2>
+        <form action="{{ url_for('new_sales_order') }}" method="POST"></form>
         <div class="new-bill">
             <h3>New Bill</h3>
             <label for="product">Select Product:</label>
@@ -219,3 +217,5 @@ table tr:nth-child(even) td {
     </div>
 </body>
 </html>
+
+{% endblock content %}
