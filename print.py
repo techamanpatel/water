@@ -12,9 +12,9 @@ def create_and_insert_customer_sales():
         DROP TABLE customer_sales_old
     ''')
 
-    cursor.execute(''' 
-        DROP TABLE customer_sales
-    ''')
+    # cursor.execute(''' 
+    #     DROP TABLE customer_sales
+    # ''')
 
     # Create the customer_sales table
     cursor.execute('''
