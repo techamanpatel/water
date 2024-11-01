@@ -127,6 +127,15 @@ def create_database():
     )
 ''')
     
+    cursor.execute(''' 
+     
+      
+      
+ ''')
+    
+
+
+
     # Commit changes and close the connection
     conn.commit()
     conn.close()
