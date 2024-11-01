@@ -126,12 +126,49 @@ def create_database():
         FOREIGN KEY (product_id) REFERENCES products(p_id) ON DELETE CASCADE
     )
 ''')
-    
+
     cursor.execute(''' 
      
-      
+      CREATE TABLE IF NOT EXISTS sales(
+        bill_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        customer_id INTEGER,
+                  customer_name TEXT,
+                   address TEXT,
+                   employee_name TEXT ,
+                   order_date TEXT,
+                   invoice TEXT,
+                   product_id INTEGER,
+                   price INTEGER,
+                   s_quantity INTEGER,
+                   r_quantity INTEGER,
+                   amount INTEGER,
+                   payment_status TEXT,
+                   payment INTEGER
+
+        )
       
  ''')
+  
+
+    # Create bill_items table
+    cursor.execute('''CREATE TABLE IF NOT EXISTS sale_items (
+        sale_item_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        bill_id INTEGER,
+        product_id INTEGER,
+        price INTEGER,
+        quantity INTEGER NOT NULL,
+        amount INTEGER,
+                   
+        FOREIGN KEY (bill_id) REFERENCES sales(bill_id),
+        FOREIGN KEY (product_id) REFERENCES customer_product_price(product_id)
+        FOREIGN KEY (price) REFERENCES customer_product_price(price)
+
+    )''')
+
+    conn.commit()
+    conn.close()
+    print("Database and tables created successfully.")
+
     
 
 

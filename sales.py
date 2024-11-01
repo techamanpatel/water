@@ -9,7 +9,7 @@ def sales_order(request):
         employee_name = request.form['employee_name']
         order_date = request.form['order_date']
         invoice = request.form['invoice']
-        product_name = request.form['product_name']
+        product_id = request.form['product_id']
         price = request.form['price']
         s_quantity = request.form['s_quantity']
         r_quantity = request.form['r_quantity']
@@ -22,7 +22,7 @@ def sales_order(request):
             cursor.execute('''
                 INSERT INTO customer_sales (customer_id, customer_name, address, employee_name, order_date, invoice, product_name, price, s_quantity, r_quantity, amount, payment_status, payment)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, )
-            ''', (customer_id, customer_name, address, employee_name, order_date, invoice, product_name, price, s_quantity, r_quantity, amount, payment_status, payment))
+            ''', (customer_id, customer_name, address, employee_name, order_date, invoice, product_id, price, s_quantity, r_quantity, amount, payment_status, payment))
 
     except Exception as e:
         flash(f"An error occurred: {str(e)}", "error")
