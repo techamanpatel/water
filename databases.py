@@ -150,24 +150,24 @@ def create_database():
  ''')
   
 
-    # Create bill_items table
-    cursor.execute('''CREATE TABLE IF NOT EXISTS sale_items (
-        sale_item_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        bill_id INTEGER,
-        product_id INTEGER,
-        price INTEGER,
-        quantity INTEGER NOT NULL,
-        amount INTEGER,
+    # # Create bill_items table
+    # cursor.execute('''CREATE TABLE IF NOT EXISTS sale_items (
+    #     sale_item_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    #     bill_id INTEGER,
+    #     product_id INTEGER,
+    #     price INTEGER,
+    #     quantity INTEGER NOT NULL,
+    #     amount INTEGER,
                    
-        FOREIGN KEY (bill_id) REFERENCES sales(bill_id),
-        FOREIGN KEY (product_id) REFERENCES customer_product_price(product_id)
-        FOREIGN KEY (price) REFERENCES customer_product_price(price)
+    #     FOREIGN KEY (bill_id) REFERENCES sales(bill_id),
+    #     FOREIGN KEY (product_id) REFERENCES customer_product_price(product_id)
+    #     FOREIGN KEY (price) REFERENCES customer_product_price(price)
 
-    )''')
+    # )''')
 
-    conn.commit()
-    conn.close()
-    print("Database and tables created successfully.")
+    # conn.commit()
+    # conn.close()
+    # print("Database and tables created successfully.")
 
     
 

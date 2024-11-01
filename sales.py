@@ -26,3 +26,14 @@ def sales_order(request):
 
     except Exception as e:
         flash(f"An error occurred: {str(e)}", "error")
+
+def get_sales_order():
+    try:
+        with sqlite3.connect('db.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT * FROM customer_sales')
+            sales = cursor.fetchall()
+        return sales if sales else []   
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}", "error")
+        return[]
