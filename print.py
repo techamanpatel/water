@@ -9,12 +9,8 @@ def create_and_insert_customer_sales():
     cursor = conn.cursor()
 
     cursor.execute(''' 
-        DROP TABLE customer_sales_old
+        DROP TABLE customer_sales
     ''')
-
-    # cursor.execute(''' 
-    #     DROP TABLE customer_sales
-    # ''')
 
     # Create the customer_sales table
     cursor.execute('''
@@ -29,7 +25,7 @@ def create_and_insert_customer_sales():
             r_quantity INTEGER NOT NULL,
             price INTEGER NOT NULL,
             amount INTEGER NOT NULL,
-            payment_status TEXT,
+            payment_status TEXT NOT NULL,
             payment TEXT NOT NULL,
             order_date DATE NOT NULL,
             invoice VARCHAR(30) NOT NULL,
@@ -41,11 +37,11 @@ def create_and_insert_customer_sales():
 
     # Dummy data to insert
     dummy_entries = [
-        (1, "John Doe", "123 Elm St", 1, 1, 5, 0, 100, 500, "complete", "CASH", "2024-10-31", "INV-001"),
-        (2, "Jane Smith", "456 Oak St", 1, 2, 3, 0, 150, 450, "complete", "CASH", "2024-10-31", "INV-002"),
+        (1, "John Doe", "123 Elm St", 1, 3, 5, 0, 100, 500, "complete", "CASH", "2024-10-31", "INV-001"),
+        (2, "Jane Smith", "456 Oak St", 1, 4, 3, 0, 150, 450, "complete", "CASH", "2024-10-31", "INV-002"),
         (3, "Alice Johnson", "789 Pine St", 1, 3, 2, 0, 200, 400, "complete", "CASH", "2024-10-31", "INV-003"),
-        (1, "John Doe", "123 Elm St", 1, 2, 1, 0, 150, 150, "complete", "CASH", "2024-10-31", "INV-001"),
-        (2, "Jane Smith", "456 Oak St", 1, 1, 2, 0, 100, 200, "complete", "CASH", "2024-10-31", "INV-002"),
+        (1, "John Doe", "123 Elm St", 1, 4, 1, 0, 150, 150, "complete", "CASH", "2024-10-31", "INV-001"),
+        (2, "Jane Smith", "456 Oak St", 1, 3, 2, 0, 100, 200, "complete", "CASH", "2024-10-31", "INV-002"),
     ]
 
     # Insert dummy data into the customer_sales table
@@ -158,11 +154,11 @@ def generate_invoice_pdf(invoice, filename):
 # Example usage:
 if __name__ == "__main__":
 
-    # create_and_insert_customer_sales()
+    create_and_insert_customer_sales()
 
 
-    invoice_id = "INV-001"
-    generate_invoice(invoice_id)
+    # invoice_id = "INV-001"
+    # generate_invoice(invoice_id)
 
     # Print the invoice
     # print(f"Invoice: {invoice_id}")
