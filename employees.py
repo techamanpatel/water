@@ -63,7 +63,7 @@ def get_employees():
         pass
     # Return the list of employees
     
-def get_employee_location_info(): 
+def get_employee_location_info():
     conn = sqlite3.connect('db.db')
     cursor = conn.cursor()
 
@@ -72,17 +72,15 @@ def get_employee_location_info():
         SELECT locations.city, 
                locations.location,
                COALESCE(employees.first_name || ' ' || employees.last_name, 'Not Yet') AS employee_name,
-               locations.id  -- Make sure to include the location_id
+               locations.id,  -- Location ID
+               (SELECT COUNT(*) FROM customers WHERE customers.location_id = locations.id) AS customer_count  -- Customer count
         FROM locations
         LEFT JOIN employee_locations ON locations.id = employee_locations.location_id
         LEFT JOIN employees ON employees.emp_id = employee_locations.emp_id
-        LEFT JOIN customers ON locations.id = customers.location_id
-        GROUP BY locations.id, employees.emp_id
     ''')
     employee_areas = cursor.fetchall()
     conn.close()
     return employee_areas
-
 
 
 def get_areas():
