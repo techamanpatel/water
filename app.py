@@ -5,6 +5,7 @@ from products import *
 from stocks import *
 from employees import *
 from customers import *
+from sales import *
 
 import databases
 databases.create_database()
@@ -249,5 +250,22 @@ def add_customer():
     add_new_customer(request)
     return redirect(url_for("show_all_customers"))
 
+@app.route('/new_sales_order',methods=["GET", "POST"])
+
+def new_sales_order():
+    auth_redirect = isauth()
+    if auth_redirect:  # Check if redirection is needed
+        return auth_redirect
+
+    if request.method == "GET":
+        sales = get_sales_order()
+        customer_products = get_customer_products(1)
+
+        return render_template('customer/new_sales_order.html', sales=sales,customer_products =customer_products ,session=session)
+
+    if request.method == "POST":
+        sales_order(request)
+        return redirect(url_for('new_sales_order'))
+
 if __name__ == '__main__':
-    app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0",debug=True)

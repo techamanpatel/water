@@ -199,29 +199,27 @@
                 <thead>
                     <tr>
                         <th>SNO</th>
-                        <th>Area Name</th>
                         <th>City</th>
+                        <th>Location</th>
                         <th>Assigned Employee</th>
-                        <th>Number of Customers</th> <!-- New Column for Customer Count -->
-                        <!-- <th>Delete</th> -->
+                        <th>Customer Count</th> <!-- New Column for Customer Count -->
                     </tr>
                 </thead>
                 <tbody>
                     {% if employee_areas %}
-                    {% for area in employee_areas %}
-                    <tr>
-                        <td>{{ loop.index }}</td>
-                        <td>{{ area[0] }}</td> <!-- Area Name (city) -->
-                        <td>{{ area[1] }}</td> <!-- Location Name -->
-                        <td>{{ area[2] }}</td> <!-- Assigned Employee Name or 'Not Yet' -->
-                        <td>{{ area[4] }}</td> <!-- Number of Customers -->
-                        <!-- <td>
-                                    <a href="{{ url_for('delete_location', location_id=area[3]) }}">
-                                        <button type="button" class="btn btn-danger">Delete</button>
+                        {% for area in employee_areas %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ area[0] }}</td> <!-- City -->
+                                <td>{{ area[1] }}</td> <!-- Location -->
+                                <td>{{ area[2] }}</td> <!-- Assigned Employee Name or 'Not Yet' -->
+                                <td>
+                                    <a href="">
+                                        {{ area[4] }} <!-- Customer Count as link -->
                                     </a>
-                                </td> -->
-                    </tr>
-                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% endfor %}
                     {% else %}
                     <tr>
                         <td colspan="5" class="center">No areas assigned yet.</td>
@@ -229,6 +227,8 @@
                     {% endif %}
                 </tbody>
             </table>
+            
+            
         </div>
 
     </div>
