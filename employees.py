@@ -67,16 +67,18 @@ def get_employee_location_info():
     conn = sqlite3.connect('db.db')
     cursor = conn.cursor()
 
-    # Fetch the areas along with the employee information
+    # Fetch areas along with employee information and customer count
     cursor.execute('''
-        SELECT locations.city, locations.location,
+        SELECT locations.city, 
+               locations.location,
                COALESCE(employees.first_name || ' ' || employees.last_name, 'Not Yet') AS employee_name,
-               locations.id  -- Make sure to include the location_id
+               locations.id,  -- Location ID
+               (SELECT COUNT(*) FROM customers WHERE customers.location_id = locations.id) AS customer_count  -- Customer count
         FROM locations
         LEFT JOIN employee_locations ON locations.id = employee_locations.location_id
         LEFT JOIN employees ON employees.emp_id = employee_locations.emp_id
     ''')
-    employee_areas = cursor.fetchall()  # This will now include the location_id
+    employee_areas = cursor.fetchall()
     conn.close()
     return employee_areas
 

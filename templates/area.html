@@ -193,10 +193,10 @@ input, select {
                 <thead>
                     <tr>
                         <th>SNO</th>
-                        <th>Area Name</th>
                         <th>City</th>
+                        <th>Location</th>
                         <th>Assigned Employee</th>
-                        <!-- <th>Delete</th> New Delete Column -->
+                        <th>Customer Count</th> <!-- New Column for Customer Count -->
                     </tr>
                 </thead>
                 <tbody>
@@ -204,14 +204,14 @@ input, select {
                         {% for area in employee_areas %}
                             <tr>
                                 <td>{{ loop.index }}</td>
-                                <td>{{ area[0] }}</td> <!-- Area Name (city) -->
-                                <td>{{ area[1] }}</td> <!-- Location Name -->
+                                <td>{{ area[0] }}</td> <!-- City -->
+                                <td>{{ area[1] }}</td> <!-- Location -->
                                 <td>{{ area[2] }}</td> <!-- Assigned Employee Name or 'Not Yet' -->
-                                <!-- <td>
-                                    <a href="{{ url_for('delete_location', location_id=area[3]) }}">
-                                        <button type="button" class="btn btn-danger">Delete</button>
+                                <td>
+                                    <a href="">
+                                        {{ area[4] }} <!-- Customer Count as link -->
                                     </a>
-                                </td> Delete Button with location_id -->
+                                </td>
                             </tr>
                         {% endfor %}
                     {% else %}
@@ -221,6 +221,7 @@ input, select {
                     {% endif %}
                 </tbody>
             </table>
+            
             
         </div>
     </div>
