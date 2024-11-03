@@ -169,6 +169,11 @@
         <header class="dashboard-header">
           <h1 class="dashboard-title">Dashboard</h1>
           <div class="admin-view">Admin View</div>
+          <div>
+            <!-- <div class="admin-view">Admin View</div> -->
+            <a href="{{ url_for('export_db') }}" class="export-button">Export Data</a>
+            <!-- <a href="{{ url_for('logout') }}" class="export-button">Logout</a> -->
+          </div>
         </header>
         <nav class="dashboard-nav">
           <a href="#" class="nav-link active">Overview</a>

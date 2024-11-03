@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, request, flash, redirect, url_for
+from flask import Flask, render_template, session, request, flash, redirect, url_for ,send_file
 import sqlite3
 from auth import *
 from products import *
@@ -6,6 +6,7 @@ from stocks import *
 from employees import *
 from customers import *
 from sales import *
+import os
 
 import databases
 databases.create_database()
@@ -178,6 +179,45 @@ def edit_employee():
     # Render the page with employee details for editing
     return render_template('emp/edit.html', employee=employee)
 
+def get_customers_for_location(location_id):
+    conn = sqlite3.connect('db.db')
+    cursor = conn.cursor()
+    
+    # Fetch the location name
+    cursor.execute('''
+        SELECT city || ', ' || location AS location_name
+        FROM locations
+        WHERE id = ?
+    ''', (location_id,))
+    
+    location_name_row = cursor.fetchone()
+    location_name = location_name_row[0] if location_name_row else "Unknown Location"
+    
+    # Debug: Print location name to verify it's fetching correctly
+    print(f"Location Name: {location_name}")
+
+    # Fetch customers associated with the location_id
+    cursor.execute('''
+        SELECT customer_name, contact, address, account_status, bottle_balance
+        FROM customers
+        WHERE location_id = ?
+    ''', (location_id,))
+    
+    customers = cursor.fetchall()
+    
+    # Debug: Print customers to verify they are being fetched
+    print(f"Customers for location_id {location_id}: {customers}")
+    
+    conn.close()
+    return location_name, customers
+
+
+
+@app.route("/employee_customer/<int:location_id>")
+def employee_customer(location_id):
+    print(f"Fetching customers for location_id: {location_id}")  # Debug statement
+    location_name, customers = get_customers_for_location(location_id)
+    return render_template("employee_customers.html", location_name=location_name, customers=customers)
 
 @app.route("/show_all_customers", methods=["GET"])
 def show_all_customers():
@@ -237,7 +277,7 @@ def customer_add():
     area = get_employee_location_info()
     
     # Get available products for selection in the customer creation form
-    conn = sqlite3.connect('db.db')
+    conn = sqlite3.connect('db.db' ,check_same_thread=False)
     cursor = conn.cursor()
     cursor.execute('SELECT p_id, product_name, product_price FROM products')
     products = cursor.fetchall()
@@ -249,6 +289,109 @@ def customer_add():
 def add_customer():
     add_new_customer(request)
     return redirect(url_for("show_all_customers"))
+
+@app.route('/update_customer/<int:customer_id>', methods=['GET', 'POST'])
+def update_customer(customer_id):
+    conn = sqlite3.connect('db.db')
+    cursor = conn.cursor()
+
+    day_mapping = {
+        'monday': '1',
+        'tuesday': '2',
+        'wednesday': '3',
+        'thursday': '4',
+        'friday': '5',
+        'saturday': '6',
+        'sunday': '7'
+    }
+
+    if request.method == 'POST':
+        try:
+            # Fetch data from the form
+            customer_name = request.form['customer_name']
+            contact = request.form['contact_number']
+            address = request.form['address']
+            account_status = request.form['account_status']
+            security_deposit_amount = float(request.form['security_deposit'])  # Convert to float
+            security_remarks = request.form.get('security_remarks', '')  # Optional
+            opening_balance = float(request.form['opening_balance'])  # Convert to float
+            bottle_balance = int(request.form['opening_bottle'])  # Convert to int
+            username = request.form['username']
+            password = request.form['password']  # Consider hashing in production
+            location_id = int(request.form.get('area')) if request.form.get('area') else None
+
+            # Convert delivery days to a string of numbers
+            days = request.form.getlist('days[]')  # Get the list of days selected
+            schedules = ','.join([day_mapping[day] for day in days if day in day_mapping])
+
+            # Perform the update in the database
+            cursor.execute(''' 
+                UPDATE customers 
+                SET customer_name = ?, contact = ?, address = ?, account_status = ?, 
+                    security_deposit_amount = ?, security_remarks = ?, opening_balance = ?, 
+                    bottle_balance = ?, username = ?, password = ?, location_id = ?, schedules = ? 
+                WHERE id = ? 
+            ''', (customer_name, contact, address, account_status, security_deposit_amount,
+                  security_remarks, opening_balance, bottle_balance, username, password, 
+                  location_id, schedules, customer_id))
+
+            conn.commit()  # Commit the changes
+            return redirect(url_for('show_all_customers'))  # Redirect to customer list
+
+        except ValueError as e:
+            # Handle value errors
+            print(f"ValueError: {e}")
+            return render_template('update_customer.html', error="Invalid input. Please check your data.", customer_id=customer_id)
+
+    # For GET request: Fetch current customer details to pre-fill the form
+    cursor.execute(''' 
+        SELECT customer_name, contact, address, account_status, security_deposit_amount, 
+               security_remarks, opening_balance, bottle_balance, username, password, 
+               location_id, schedules 
+        FROM customers 
+        WHERE id = ? 
+    ''', (customer_id,))
+    customer = cursor.fetchone()
+
+    if customer is None:
+        return "Customer not found", 404  # Handle customer not found
+
+    # Fetch available locations for dropdown
+    cursor.execute(''' 
+        SELECT id, city, location FROM locations 
+    ''')
+    locations = cursor.fetchall()
+
+    # Split schedules back into days for pre-filling checkboxes
+    schedules = customer[11].split(',') if customer[11] else []
+    days_selected = [day for day, num in day_mapping.items() if num in schedules]
+
+    conn.close()  # Close the connection here, after all operations are complete
+
+    return render_template('update_customer.html', 
+                           customer=customer, 
+                           days_selected=days_selected, 
+                           day_mapping=day_mapping, 
+                           customer_id=customer_id, 
+                           locations=locations)
+
+
+@app.route('/delete_customer/<int:customer_id>', methods=['POST'])
+def delete_customer(customer_id):
+    conn = sqlite3.connect('db.db')
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute('DELETE FROM customers WHERE id = ?', (customer_id,))
+        conn.commit()
+        return redirect(url_for('show_all_customers'))  # Redirect to customer list after deletion
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return "Error occurred while deleting the customer", 500
+    finally:
+        conn.close()  # Ensure the connection is closed
+
+
 
 @app.route('/new_sales_order',methods=["GET", "POST"])
 
@@ -266,6 +409,25 @@ def new_sales_order():
     if request.method == "POST":
         sales_order(request)
         return redirect(url_for('new_sales_order'))
+
+@app.route('/export_db')
+def export_db():
+    try:
+        # Specify the path to the db.db file
+        db_path = os.path.join(os.getcwd(), 'db.db')
+        
+        # Check if the file exists
+        if os.path.exists(db_path):
+            # Send the file to the client for download
+            return send_file(db_path, as_attachment=True, download_name='db.db')
+        else:
+            flash("Database file not found.", "error")
+            return redirect(url_for("index"))
+    except Exception as e:
+        flash(f"Error exporting database: {e}", "error")
+        return redirect(url_for("index"))
+    
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0",debug=True)

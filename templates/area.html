@@ -171,12 +171,12 @@ input, select {
             <label for="add-area">Add New Area:</label>
             <form id="add-area-form" class="assign-form" method="POST" action="/add_area" >
                 <div class="form-group">
-                    <label for="city">City:</label>
+                    <label for="city">Area</label>
                     <input type="text" id="city" name="city" required>
                 </div>
     
                 <div class="form-group">
-                    <label for="location">Location Region:</label>
+                    <label for="location">City</label>
                     <input type="text" id="location" name="location" required>
                 </div>
     
@@ -208,7 +208,7 @@ input, select {
                                 <td>{{ area[1] }}</td> <!-- Location -->
                                 <td>{{ area[2] }}</td> <!-- Assigned Employee Name or 'Not Yet' -->
                                 <td>
-                                    <a href="">
+                                    <a href="{{ url_for('employee_customer', location_id=area[3]) }}">
                                         {{ area[4] }} <!-- Customer Count as link -->
                                     </a>
                                 </td>

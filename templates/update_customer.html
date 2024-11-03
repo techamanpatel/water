@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Customer</title>
+</head>
+<style>
+    /* General Styles */
+
+.update_container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Form Input Styles */
+label {
+    margin: 10px 0 5px;
+    color: #555;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="password"],
+select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-bottom: 15px;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus,
+select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Checkbox Styles */
+input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+/* Submit Button Styles */
+button[type="submit"] {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Error Message Styles */
+.error {
+    color: red;
+    text-align: center;
+    margin: 10px 0;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .update_container {
+        width: 90%;
+        padding: 15px;
+    }
+}
+
+</style>
+<body>
+    <div class="customer-list-container update_container">
+        <h1>Update Customer</h1>
+        
+        <form action="{{ url_for('update_customer', customer_id=customer_id) }}" method="POST">
+            <label for="customer_name">Customer Name:</label>
+            <input type="text" name="customer_name" value="{{ customer[0] }}" required>
+        
+            <label for="contact_number">Contact Number:</label>
+            <input type="text" name="contact_number" value="{{ customer[1] }}" required>
+        
+            <label for="address">Address:</label>
+            <input type="text" name="address" value="{{ customer[2] }}" required>
+        
+            <label for="account_status">Account Status:</label>
+            <input type="text" name="account_status" value="{{ customer[3] }}" required>
+        
+            <label for="security_deposit">Security Deposit Amount:</label>
+            <input type="number" name="security_deposit" value="{{ customer[4] }}" step="0.01" required>
+        
+            <label for="security_remarks">Security Remarks:</label>
+            <input type="text" name="security_remarks" value="{{ customer[5] }}">
+        
+            <label for="opening_balance">Opening Balance:</label>
+            <input type="number" name="opening_balance" value="{{ customer[6] }}" step="0.01" required>
+        
+            <label for="opening_bottle">Opening Bottle:</label>
+            <input type="number" name="opening_bottle" value="{{ customer[7] }}" required>
+        
+            <label for="username">Username:</label>
+            <input type="text" name="username" value="{{ customer[8] }}" required>
+        
+            <label for="password">Password:</label>
+            <input type="password" name="password" value="{{ customer[9] }}" required>
+        
+            <label for="area">Location:</label>
+            <select name="area">
+                <option value="">Select Location</option>
+                {% for location in locations %}
+                <option value="{{ location[0] }}" {% if location[0] == customer[10] %}selected{% endif %}>{{ location[1] }} - {{ location[2] }}</option>
+            {% endfor %}
+            </select>
+        
+            <label>Delivery Days:</label>
+            {% for day, num in day_mapping.items() %}
+                <input type="checkbox" name="days[]" value="{{ day }}" {% if day in days_selected %}checked{% endif %}> {{ day|capitalize }}
+            {% endfor %}
+        
+            <button type="submit">Update Customer</button>
+        </form>
+        
+    </div>
+</body>
+</html>
+
+{% endblock content %}

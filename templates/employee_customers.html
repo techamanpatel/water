@@ -1,0 +1,151 @@
+
+{% extends "base.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer List for {{ location_name }}</title>
+</head>
+<style>
+    /* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f9f9fb;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+thead {
+    background-color: #007bff;
+    color: #fff;
+    text-align: left;
+}
+
+th,
+td {
+    padding: 12px 15px;
+    font-size: 14px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+th {
+    font-weight: bold;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f7f7f7;
+}
+
+tbody tr:hover {
+    background-color: #e6f7ff;
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
+        display: block;
+    }
+    tr {
+        margin-bottom: 15px;
+    }
+    th,
+    td {
+        text-align: left;
+        padding: 10px;
+        font-size: 14px;
+    }
+    th {
+        background-color: #007bff;
+        color: #fff;
+        font-weight: bold;
+        display: inline-block;
+        width: 100%;
+    }
+    td {
+        display: inline-block;
+        width: 100%;
+        text-align: right;
+        position: relative;
+        padding-left: 50%;
+    }
+    td:before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #333;
+        position: absolute;
+        left: 10px;
+        text-align: left;
+    }
+}
+
+/* Empty State and Error Messages */
+p {
+    text-align: center;
+    font-size: 16px;
+    color: #666;
+    margin-top: 20px;
+}
+
+</style>
+<body>
+    <h1>Customer List for {{ location_name }}</h1>
+
+    {% if location_name == "Unknown Location" %}
+        <p>The specified location does not exist. Please check the location ID.</p>
+    {% elif customers %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Customer Name</th>
+                    <th>Contact</th>
+                    <th>Address</th>
+                    <th>Account Status</th>
+                    <th>Bottle Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in customers %}
+                    <tr>
+                        <td>{{ customer[0] }}</td> <!-- Customer Name -->
+                        <td>{{ customer[1] }}</td> <!-- Contact -->
+                        <td>{{ customer[2] }}</td> <!-- Address -->
+                        <td>{{ customer[3] }}</td> <!-- Account Status -->
+                        <td>{{ customer[4] }}</td> <!-- Bottle Balance -->
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No customers are assigned to this location.</p>
+    {% endif %}
+</body>
+</html>
+
+{% endblock content %}
