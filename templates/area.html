@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    /* Main container styling */
+.area-assign-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+/* Form container styling */
+.form-container {
+    width: 48%;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.assign-form {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.btn {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #218838;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+/* Table container styling */
+.employee-area-list {
+    width: 48%;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.employee-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.employee-table th, .employee-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Table header styling */
+.employee-table th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* Alternating row colors */
+.employee-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.employee-table tr:hover {
+    background-color: #ddd;
+}
+
+/* Center alignment for "No areas assigned yet." */
+.center {
+    text-align: center;
+    color: #666;
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+    .form-container, .employee-area-list {
+        width: 100%;
+    }
+}
+</style>
+<body>
+    <h2>Area Assign</h2>
+    <div class="area-assign-container">
+       
+        
+        <div class="form-container">
+    
+            <!-- Assign Area Form -->
+            <form id="assign-area-form" class="assign-form" method="POST" action="/assign_area">
+                <div class="form-group">
+                    <label for="employee">Select Employee:</label>
+                    <select id="employee" name="employee" required>
+                        <option value="">SELECT EMPLOYEE</option>
+                        {% if employees %}
+                        {% for employee in employees %}
+                        <option value="{{ employee[0] }}">{{ employee[2] }} {{ employee[3] }}</option>  <!-- Employee's full name -->
+                        {% endfor %}
+                        {% else %}
+                        <option value="NONE">NONE</option>
+                        {% endif %}
+                    </select>
+                </div>
+            
+                <div class="form-group">
+                    <label for="area">Select Area:</label>
+                    <select id="area" name="area" required>
+                        <option value="">SELECT AREA</option>
+                        {% if areas %}
+                        {% for area in areas %}
+                        <option value="{{ area[0] }}">{{ area[1] }}</option>  <!-- Area Name -->
+                        {% endfor %}
+                        {% else %}
+                        <option value="NONE">NONE</option>
+                        {% endif %}
+                    </select>
+                </div>
+            
+                <div class="form-actions">
+                    <button type="submit" class="btn">Assign Area</button>
+                </div>
+            </form>
+            <br><br><br><br>
+    
+            <!-- Add New Area Form (Initially Hidden) -->
+            <label for="add-area">Add New Area:</label>
+            <form id="add-area-form" class="assign-form" method="POST" action="/add_area" >
+                <div class="form-group">
+                    <label for="city">Area</label>
+                    <input type="text" id="city" name="city" required>
+                </div>
+    
+                <div class="form-group">
+                    <label for="location">City</label>
+                    <input type="text" id="location" name="location" required>
+                </div>
+    
+                <div class="form-actions">
+                    <button type="submit" class="btn">Add Area</button>
+                </div>
+            </form>
+        </div>
+    
+        <!-- Right side: Table to display assigned areas -->
+        <div class="employee-area-list">
+            <h3>Employee Area List</h3>
+            <table class="employee-table">
+                <thead>
+                    <tr>
+                        <th>SNO</th>
+                        <th>City</th>
+                        <th>Location</th>
+                        <th>Assigned Employee</th>
+                        <th>Customer Count</th> <!-- New Column for Customer Count -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if employee_areas %}
+                        {% for area in employee_areas %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ area[0] }}</td> <!-- City -->
+                                <td>{{ area[1] }}</td> <!-- Location -->
+                                <td>{{ area[2] }}</td> <!-- Assigned Employee Name or 'Not Yet' -->
+                                <td>
+                                    <a href="{{ url_for('employee_customer', location_id=area[3]) }}">
+                                        {{ area[4] }} <!-- Customer Count as link -->
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="center">No areas assigned yet.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+            
+            
+        </div>
+    </div>
+</body>
+</html>
+
+{% endblock content %}
