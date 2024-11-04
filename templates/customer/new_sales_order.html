@@ -217,7 +217,7 @@ input, select, .sales_container button {
         </div>
     </div>
     <script>
-        function fetchProducts() {
+       function fetchProducts() {
     const customerName = document.getElementById('customer_name').value;
     
     if (customerName) {
@@ -226,21 +226,28 @@ input, select, .sales_container button {
             .then(data => {
                 const productSelect = document.getElementById('product_name');
                 const priceInput = document.getElementById('price');
-                
+                const customerIdInput = document.getElementById('customer-id');
+                const addressInput = document.getElementById('address');
+
                 // Clear previous options and price
-                productSelect.innerHTML = "";
+                productSelect.innerHTML = "<option value='' disabled selected>Select a product</option>";
                 priceInput.value = "";
 
                 if (data.error) {
                     alert(data.error);
                 } else {
+                    // Set customer info
+                    customerIdInput.value = data.customer_info.customer_id;
+                    addressInput.value = data.customer_info.address;
+
+                    // Populate product options and set the first product's price
                     data.products.forEach((product, index) => {
                         let option = document.createElement('option');
-                        option.value = product.price; // Store price in option value
+                        option.value = product.price;
                         option.text = product.product_name;
                         productSelect.add(option);
-                        
-                        // Set the first product's price immediately after adding options
+
+                        // Set price for the first product automatically
                         if (index === 0) {
                             priceInput.value = product.price;
                         }

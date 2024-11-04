@@ -437,9 +437,10 @@ def get_customer_products_by_name():
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
-    # Join customers, customer_product_price, and products tables to get product details based on customer_name
+    # Get customer details (id and address) along with product info
     cursor.execute('''
-        SELECT products.product_name, customer_product_price.price 
+        SELECT customers.id AS customer_id, customers.address, 
+               products.product_name, customer_product_price.price 
         FROM customers 
         JOIN customer_product_price ON customers.id = customer_product_price.customer_id
         JOIN products ON customer_product_price.product_id = products.p_id
@@ -449,14 +450,19 @@ def get_customer_products_by_name():
     results = cursor.fetchall()
     conn.close()
 
-     # Convert results to a list of dictionaries for easier processing in JavaScript
-    products = [{'product_name': row['product_name'], 'price': row['price']} for row in results]
-    
-    if products:
-        return jsonify({'products': products})
-    else:
-        return jsonify({'error': 'No products found for this customer'})
+    if results:
+        # Retrieve customer info from the first row
+        customer_info = {
+            'customer_id': results[0]['customer_id'],
+            'address': results[0]['address']
+        }
 
+        # Prepare product list
+        products = [{'product_name': row['product_name'], 'price': row['price']} for row in results]
+
+        return jsonify({'customer_info': customer_info, 'products': products})
+    else:
+        return jsonify({'error': 'No products found for this customer'}), 404
 
 
 
