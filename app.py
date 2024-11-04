@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, request, flash, redirect, url_for ,send_file
+from flask import Flask, render_template, session, request, flash, redirect, url_for ,send_file,jsonify
 import sqlite3
 from auth import *
 from products import *
@@ -427,6 +427,38 @@ def export_db():
         flash(f"Error exporting database: {e}", "error")
         return redirect(url_for("index"))
     
+
+# new_order_sales
+
+@app.route('/get_customer_products_by_name', methods=['GET'])
+def get_customer_products_by_name():
+    customer_name = request.args.get('customer_name')
+    conn = sqlite3.connect('db.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    # Join customers, customer_product_price, and products tables to get product details based on customer_name
+    cursor.execute('''
+        SELECT products.product_name, customer_product_price.price 
+        FROM customers 
+        JOIN customer_product_price ON customers.id = customer_product_price.customer_id
+        JOIN products ON customer_product_price.product_id = products.p_id
+        WHERE customers.customer_name = ?
+    ''', (customer_name,))
+    
+    results = cursor.fetchall()
+    conn.close()
+
+     # Convert results to a list of dictionaries for easier processing in JavaScript
+    products = [{'product_name': row['product_name'], 'price': row['price']} for row in results]
+    
+    if products:
+        return jsonify({'products': products})
+    else:
+        return jsonify({'error': 'No products found for this customer'})
+
+
+
 
 
 if __name__ == '__main__':
