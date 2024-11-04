@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, request, flash, redirect, url_for
+from flask import Flask, render_template, session, request, flash, redirect, url_for ,send_file
 import sqlite3
 from auth import *
 from products import *
@@ -6,6 +6,7 @@ from stocks import *
 from employees import *
 from customers import *
 from sales import *
+import os
 
 import databases
 databases.create_database()
@@ -17,6 +18,23 @@ def isauth():
     if "name" not in session:
         return redirect(url_for('login'))
     return None  # Return None if the user is authenticated
+
+@app.route('/export_db',methods=['POST'])
+def export_db():
+    try:
+        # Specify the path to the db.db file
+        db_path = os.path.join(os.getcwd(), 'db.db')
+        
+        # Check if the file exists
+        if os.path.exists(db_path):
+            # Send the file to the client for download
+            return send_file(db_path, as_attachment=True, download_name='db.db')
+        else:
+            flash("Database file not found.", "error")
+            return redirect(url_for("index"))
+    except Exception as e:
+        flash(f"Error exporting database: {e}", "error")
+        return redirect(url_for("index"))
 
 @app.route('/signup', methods=['POST'])
 def signup():
@@ -250,8 +268,8 @@ def add_customer():
     add_new_customer(request)
     return redirect(url_for("show_all_customers"))
 
-@app.route('/new_sales_order',methods=["GET", "POST"])
 
+@app.route('/new_sales_order',methods=["GET", "POST"])
 def new_sales_order():
     auth_redirect = isauth()
     if auth_redirect:  # Check if redirection is needed
@@ -267,5 +285,21 @@ def new_sales_order():
         sales_order(request)
         return redirect(url_for('new_sales_order'))
 
+# @app.route('/new_sales_order/<int:customer_id>',methods=["GET", "POST"])
+# def new_sales_order(customer_id):
+#     auth_redirect = isauth()
+#     if auth_redirect:  # Check if redirection is needed
+#         return auth_redirect
+
+#     if request.method == "GET":
+#         sales = get_sales_order()
+#         customer_products = get_customer_products(customer_id)
+
+#         return render_template('customer/new_sales_order.html', sales=sales,customer_products =customer_products ,session=session)
+
+#     if request.method == "POST":
+#         sales_order(request)
+#         return redirect(url_for('new_sales_order'))
+
 if __name__ == '__main__':
-    app.run(host="0.0.0.0",debug=True)
+    app.run(host="0.0.0.0")
